@@ -16,7 +16,7 @@ Planned
 * a Paragon Upgrade
 * Ultimate Crosspath Mod compatibility
 
-### Huge Thanks to the homie Mattcy1 for help with the UI!
+## Huge Thanks to the homie Mattcy1 for help with the UI!
 (Tower Concept inspired by the Goblin Machine from Clash Royale)
 
 [![Requires BTD6 Mod Helper](https://raw.githubusercontent.com/gurrenm3/BTD-Mod-Helper/master/banner.png)](https://github.com/gurrenm3/BTD-Mod-Helper#readme)
