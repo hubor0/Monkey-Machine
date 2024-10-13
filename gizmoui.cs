@@ -170,9 +170,9 @@ namespace GizmoUis
                         }
                     }
                 }));
-                button.AddImage(new("rocketsign", 0, 0, 130, 130), ModContent.GetSpriteReference<MonkeyMachine.MonkeyMachine>("rocketicon").GUID);
-                button2.AddImage(new("blackholesign", 0, 0, 130, 130), ModContent.GetSpriteReference<MonkeyMachine.MonkeyMachine>("blackholeicon").GUID);
-                button3.AddImage(new("Camodetsign", 0, 0, 130, 130), ModContent.GetSpriteReference<MonkeyMachine.MonkeyMachine>("beaconicon").GUID);
+                button.AddImage(new Info("rocketsign", 0, 0, 130, 130), ModContent.GetTextureGUID<MonkeyMachine.MonkeyMachine>("rocketicon"));
+                button2.AddImage(new Info("blackholesign", 0, 0, 130, 130), ModContent.GetTextureGUID<MonkeyMachine.MonkeyMachine>("blackholeicon"));
+                button3.AddImage(new Info("Camodetsign", 0, 0, 130, 130), ModContent.GetTextureGUID<MonkeyMachine.MonkeyMachine>("beaconicon"));
             }
         }
 
@@ -294,9 +294,9 @@ namespace GizmoUis
                         }
                     }
                 }));
-                button.AddImage(new("rocketsign", 0, 0, 130, 130), ModContent.GetSpriteReference<MonkeyMachine.MonkeyMachine>("rocketicon").GUID);
-                button2.AddImage(new("blackholesign", 0, 0, 130, 130), ModContent.GetSpriteReference<MonkeyMachine.MonkeyMachine>("blackholeicon").GUID);
-                button3.AddImage(new("Camodetsign", 0, 0, 130, 130), ModContent.GetSpriteReference<MonkeyMachine.MonkeyMachine>("beaconicon").GUID);
+                button.AddImage(new Info("rocketsign", 0, 0, 130, 130), ModContent.GetTextureGUID<MonkeyMachine.MonkeyMachine>("rocketicon"));
+                button2.AddImage(new Info("blackholesign", 0, 0, 130, 130), ModContent.GetTextureGUID<MonkeyMachine.MonkeyMachine>("blackholeicon"));
+                button3.AddImage(new Info("Camodetsign", 0, 0, 130, 130), ModContent.GetTextureGUID<MonkeyMachine.MonkeyMachine>("beaconicon"));
             }
         }
     }
