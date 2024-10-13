@@ -118,14 +118,14 @@ namespace MonkeyMachine
             towerModel.range = 65;
             var attackModel = towerModel.GetAttackModel();
             attackModel.range = 25;
-            attackModel.weapons[0].Rate = 0.9f;
+            attackModel.weapons[0].Rate = 0.75f;
             attackModel.weapons[0].projectile.pierce = 1;
             attackModel.weapons[0].projectile.ApplyDisplay<punch>();
             attackModel.weapons[0].projectile.GetBehavior<TravelStraitModel>().Lifespan = 0.05f;
             attackModel.name = "melee";
             var rocket = Game.instance.model.GetTowerFromId("MortarMonkey-030").GetAttackModel().Duplicate();
             rocket.range = 65;
-            rocket.weapons[0].Rate = 5.3f;
+            rocket.weapons[0].Rate = 4.1f;
             rocket.weapons[0].projectile.GetBehavior<CreateProjectileOnExhaustFractionModel>().projectile.GetDamageModel().damage = 3;
             rocket.weapons[0].projectile.scale += 3;
             rocket.weapons[0].projectile.GetBehavior<CreateProjectileOnExhaustFractionModel>().projectile.GetDamageModel().immuneBloonProperties = BloonProperties.Black;
@@ -746,61 +746,64 @@ namespace MonkeyMachine
 
 
 
-    public class ElectricShockDisplay : ModDisplay
-    {
-        // Credit Bergbauer22: DirkTheDino
-        private const string BaseOverlayType = "LaserShock";
-        public static readonly string CustomOverlayType = "ElectricShock";
-        private static SerializableDictionary<string, BloonOverlayScriptable> OverlayTypes => GameData.Instance.bloonOverlays.overlayTypes;
-        public override string Name => base.Name + "-" + overlayClass;
-        public override PrefabReference BaseDisplayReference => OverlayTypes[BaseOverlayType].assets[overlayClass];
-        protected readonly BloonOverlayClass overlayClass;
+     /// <summary>
+    ///  public class ElectricShockDisplay : ModDisplay
+    ///   {
+    // Credit Bergbauer22: DirkTheDino
+    ///      private const string BaseOverlayType = "LaserShock";
+    ///      public static readonly string CustomOverlayType = "ElectricShock";
+    ///       private static SerializableDictionary<string, BloonOverlayScriptable> OverlayTypes => GameData.Instance.bloonOverlays.overlayTypes;
+    ///       public override string Name => base.Name + "-" + overlayClass;
+    ///       public override PrefabReference BaseDisplayReference => OverlayTypes[BaseOverlayType].assets[overlayClass];
+    ///       protected readonly BloonOverlayClass overlayClass;
 
-        public ElectricShockDisplay() { }
+    ///      public ElectricShockDisplay() { }
 
-        public ElectricShockDisplay(BloonOverlayClass overlayClass)
-        {
-            this.overlayClass = overlayClass;
-        }
+    ///      public ElectricShockDisplay(BloonOverlayClass overlayClass)
+    ///      {
+    ///          this.overlayClass = overlayClass;
+    ///       }
 
-        public override IEnumerable<ModContent> Load() => System.Enum.GetValues(typeof(BloonOverlayClass))
-            .Cast<BloonOverlayClass>()
-            .Select(bc => new ElectricShockDisplay(bc));
+    ///      public override IEnumerable<ModContent> Load() => System.Enum.GetValues(typeof(BloonOverlayClass))
+    ///         .Cast<BloonOverlayClass>()
+    ///         .Select(bc => new ElectricShockDisplay(bc));
 
-        public override void Register()
-        {
-            base.Register();
-            BloonOverlayScriptable electricShock;
-            if (!OverlayTypes.ContainsKey(CustomOverlayType))
-            {
-                electricShock = OverlayTypes[CustomOverlayType] = ScriptableObject.CreateInstance<BloonOverlayScriptable>();
-                electricShock.assets = new SerializableDictionary<BloonOverlayClass, PrefabReference>();
-                electricShock.displayLayer = OverlayTypes[BaseOverlayType].displayLayer;
-            }
-            else
-            {
-                electricShock = OverlayTypes[CustomOverlayType];
-            }
-            electricShock.assets[overlayClass] = CreatePrefabReference(Id);
-        }
+    ///    public override void Register()
+    ///    {
+    ///         base.Register();
+    ///         BloonOverlayScriptable electricShock;
+    ///         if (!OverlayTypes.ContainsKey(CustomOverlayType))
+    ///         {
+    ///             electricShock = OverlayTypes[CustomOverlayType] = ScriptableObject.CreateInstance<BloonOverlayScriptable>();
+    ///            electricShock.assets = new SerializableDictionary<BloonOverlayClass, PrefabReference>();
+    ///            electricShock.displayLayer = OverlayTypes[BaseOverlayType].displayLayer;
+    ///        }
+    ///        else
+    ///        {
+    ///            electricShock = OverlayTypes[CustomOverlayType];
+    ///        }
+    ///        electricShock.assets[overlayClass] = CreatePrefabReference(Id);
+    ///     }
 
-        public override void ModifyDisplayNode(UnityDisplayNode node)
-        {
-            if (node.GetComponentInChildren<CustomSpriteFrameAnimator>())
-            {
-                Il2CppSystem.Collections.Generic.List<Sprite> frames = new Il2CppSystem.Collections.Generic.List<Sprite>();
-                frames.Add(GetSprite("Electro1"));
-                frames.Add(GetSprite("Electro2"));
-                frames.Add(GetSprite("Electro3"));
-                frames.Add(GetSprite("Electro4"));
-                node.GetComponentInChildren<CustomSpriteFrameAnimator>().frames = frames;
-            }
-            if (node.GetComponentInChildren<MeshRenderer>())
-            {
-                node.GetComponentInChildren<MeshRenderer>().SetMainTexture(GetTexture(CustomOverlayType));
-            }
-        }
-    }
+    ///        public override void ModifyDisplayNode(UnityDisplayNode node)
+    ///    {
+    ///      if (node.GetComponentInChildren<CustomSpriteFrameAnimator>())
+    ///       {
+    ///          Il2CppSystem.Collections.Generic.List<Sprite> frames = new Il2CppSystem.Collections.Generic.List<Sprite>();
+    ///         frames.Add(GetSprite("Electro1"));
+    ///          frames.Add(GetSprite("Electro2"));
+    ///         frames.Add(GetSprite("Electro3"));
+    ///         frames.Add(GetSprite("Electro4"));
+    ///         node.GetComponentInChildren<CustomSpriteFrameAnimator>().frames = frames;
+    ///    }
+    ///    if (node.GetComponentInChildren<MeshRenderer>())
+    /// {
+    /// node.GetComponentInChildren<MeshRenderer>().SetMainTexture(GetTexture(CustomOverlayType));
+    /// }
+    /// }
+    /// }
+
+    /// </summary>
 }
     public class rocketgizmo1 : ModTower
     {
