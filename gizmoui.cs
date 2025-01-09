@@ -1,4 +1,4 @@
-﻿using BTD_Mod_Helper.Api.Enums;
+using BTD_Mod_Helper.Api.Enums;
 using Il2CppAssets.Scripts.Unity.UI_New.InGame;
 using System.Collections.Generic;
 using UnityEngine;
@@ -57,7 +57,8 @@ namespace GizmoUis
             if (InGame.instance != null)
             {
                 RectTransform rect = InGame.instance.uiRect;
-                var panel = rect.gameObject.AddModHelperPanel(new("Panel_", -2150, 760, 200, 580), VanillaSprites.BrownInsertPanel);
+                var panel = rect.gameObject.AddModHelperPanel(new("Panelinvis", 0, 0, 0, 0), VanillaSprites.BrownInsertPanel);
+                panel = GameObject.Find("TowerElements").AddModHelperPanel(new Info("switchpanel", 370, 640, 200, 500), ModContent.GetTextureGUID<MonkeyMachine.MonkeyMachine>("punch"));
                 instance = panel.AddComponent<GizmoMenu>();
                 var button = panel.AddButton(new("Button_", 0, 180, 170, 170), VanillaSprites.GreenBtnSquare, new Action(() =>
                 {
