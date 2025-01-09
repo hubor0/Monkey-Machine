@@ -34,6 +34,7 @@ using MonkeyMachine;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using System;
 using static looks.Displays;
 
 [assembly: MelonInfo(typeof(MonkeyMachine.MonkeyMachine), ModHelperData.Name, ModHelperData.Version, ModHelperData.RepoOwner)]
@@ -120,13 +121,18 @@ namespace MonkeyMachine
             attackModel.range = 25;
             attackModel.weapons[0].Rate = 0.75f;
             attackModel.weapons[0].projectile.pierce = 1;
+            attackModel.weapons[0].projectile.maxPierce = 1.1f;
             attackModel.weapons[0].projectile.ApplyDisplay<punch>();
             attackModel.weapons[0].projectile.GetBehavior<TravelStraitModel>().Lifespan = 0.05f;
+            attackModel.weapons[0].projectile.AddBehavior(Game.instance.model.GetTowerFromId("BombShooter").GetAttackModel().weapons[0].projectile.GetBehavior<CreateProjectileOnContactModel>());
+            attackModel.weapons[0].projectile.GetBehavior<CreateProjectileOnContactModel>().projectile.radius = 2f;
+            attackModel.weapons[0].projectile.GetBehavior<CreateProjectileOnContactModel>().projectile.GetDamageModel().damage = 1;
             attackModel.name = "melee";
             var rocket = Game.instance.model.GetTowerFromId("MortarMonkey-030").GetAttackModel().Duplicate();
             rocket.range = 65;
             rocket.weapons[0].Rate = 4.1f;
             rocket.weapons[0].projectile.GetBehavior<CreateProjectileOnExhaustFractionModel>().projectile.GetDamageModel().damage = 3;
+            rocket.weapons[0].projectile.GetBehavior<CreateProjectileOnExhaustFractionModel>().projectile.pierce = 9999f;
             rocket.weapons[0].projectile.scale += 3;
             rocket.weapons[0].projectile.GetBehavior<CreateProjectileOnExhaustFractionModel>().projectile.GetDamageModel().immuneBloonProperties = BloonProperties.Black;
             rocket.RemoveBehavior<RotateToPointerModel>();
@@ -279,12 +285,13 @@ namespace MonkeyMachine
             towerModel.ApplyDisplay<display020>();
             var attackModel = towerModel.GetAttackModel();
             var electro = Game.instance.model.GetTowerFromId("IceMonkey-004").GetWeapon().projectile.GetBehavior<CreateProjectileOnContactModel>().projectile.GetBehavior<AddBehaviorToBloonModel>().Duplicate();
-            electro.mutationId = "Ice:Icicles";
+            electro.mutationId = "electricshock";
             electro.GetBehavior<CarryProjectileModel>().projectile.ApplyDisplay<punch>();
             electro.GetBehavior<CarryProjectileModel>().projectile.GetDamageModel().damage = 1;
             electro.name = "voltage";
+            electro.overlayType = "LaserShock";
             electro.GetBehavior<CarryProjectileModel>().projectile.GetDamageModel().immuneBloonProperties = BloonProperties.Purple | BloonProperties.Lead;
-            electro.overlayType = ElectricShockDisplay.CustomOverlayType;
+
             attackModel.weapons[0].projectile.AddBehavior(electro);
             attackModel.weapons[0].projectile.collisionPasses = new int[] { -1, 0, 1 };
             var rocket = towerModel.GetAttackModel("rocket_attack");
@@ -399,7 +406,7 @@ namespace MonkeyMachine
             var stun = Game.instance.model.GetTowerFromId("BombShooter-400").GetAttackModel().weapons[0].projectile.GetBehavior<CreateProjectileOnContactModel>().projectile.GetBehavior<SlowModel>();
             stun.Lifespan = 0.12f;
             var bolt = Game.instance.model.GetTower(TowerType.MortarMonkey).GetWeapon().projectile.GetBehavior<CreateProjectileOnExhaustFractionModel>().Duplicate();
-            rocket.weapons[0].projectile.GetBehavior<CreateProjectileOnExhaustFractionModel>().projectile.AddBehavior(new DamageModifierForTagModel("Moabsbd", "Moabs", 3, 1, false, false));
+            rocket.weapons[0].projectile.GetBehavior<CreateProjectileOnExhaustFractionModel>().projectile.AddBehavior(new DamageModifierForTagModel("Moabsbd", "Moabs", 4, 15, false, false));
             rocket.weapons[0].projectile.GetBehavior<CreateProjectileOnExhaustFractionModel>().projectile.AddBehavior(stun);
             rocket.weapons[0].projectile.GetBehavior<CreateProjectileOnExhaustFractionModel>().projectile.GetDamageModel().immuneBloonProperties = BloonProperties.Purple;
             bolt.projectile = Game.instance.model.GetTowerFromId("ObynGreenfoot 3").GetAbility().GetBehavior<ActivateAttackModel>().attacks[0].weapons[0].projectile.Duplicate();
@@ -424,17 +431,18 @@ namespace MonkeyMachine
         public override string Portrait => "003copy";
         public override string Icon => "u003";
         public override string DisplayName => "Heavy-Duty Machine";
-        public override string Description => "Melee attacks are now slower but deal damage in an Area. Deals extra Damage to Fortified and Ceramic Bloons";
+        public override string Description => "Melee attacks now create small explosions on every hit. Deals extra Damage to Fortified and Ceramic Bloons";
         public override void ApplyUpgrade(TowerModel towerModel)
         {
             towerModel.ApplyDisplay<display003>();
             towerModel.GetAttackModel().weapons[0].rate += .25f;
-            var aoe = Game.instance.model.GetTowerFromId("BombShooter-300").GetAttackModel().weapons[0].projectile.GetBehavior<CreateProjectileOnContactModel>().Duplicate();
+            var aoe = towerModel.GetAttackModel("melee").weapons[0].projectile.GetBehavior<CreateProjectileOnContactModel>();
+            aoe.projectile = Game.instance.model.GetTowerFromId("BombShooter-300").GetAttackModel().weapons[0].projectile.GetBehavior<CreateProjectileOnContactModel>().projectile;
+            aoe.projectile.radius += 27;
             aoe.projectile.RemoveBehavior<PushBackModel>();
             aoe.projectile.GetDamageModel().immuneBloonProperties = BloonProperties.None;
-            towerModel.GetAttackModel().weapons[0].projectile.AddBehavior(aoe);
-            towerModel.GetAttackModel().weapons[0].projectile.AddBehavior(new DamageModifierForTagModel("DamageModifierForTagModel_Fortified", "Fortified", 1, 4, false, false));
-            towerModel.GetAttackModel().weapons[0].projectile.AddBehavior(new DamageModifierForTagModel("DamageModifierForTagModel_Ceramic", "Ceramic", 1, 4, false, false));
+            aoe.projectile.AddBehavior(new DamageModifierForTagModel("DamageModifierForTagModel_Fortified", "Fortified", 1, 3, false, false));
+            aoe.projectile.AddBehavior(new DamageModifierForTagModel("DamageModifierForTagModel_Ceramic", "Ceramic", 1, 3, false, false));
         }
 
     }
@@ -628,11 +636,18 @@ namespace MonkeyMachine
             squeeze.GetBehavior<TargetStrongModel>().isSelectable = true;
             squeeze.AddBehavior<TargetFirstModel>(new TargetFirstModel("TargetFirstModel_", true, false));
             squeeze.range = towerModel.GetAttackModel().range;
-            squeeze.weapons[0].projectile.pierce = 13;
+            squeeze.weapons[0].projectile.pierce = 33;
+            squeeze.weapons[0].projectile.GetDamageModel().damage = 4;
+            squeeze.weapons[0].projectile.GetDamageModel().maxDamage = 10;
+            squeeze.weapons[0].projectile.GetDamageModel().distributeToChildren = true;
+            var decamo = Game.instance.model.GetTowerFromId("NinjaMonkey-020").GetWeapon().projectile.GetBehavior<RemoveBloonModifiersModel>().Duplicate<RemoveBloonModifiersModel>();
+            decamo.cleanseCamo = false;
+            decamo.cleanseRegen = true;
+            squeeze.weapons[0].projectile.AddBehavior(decamo);
             squeeze.weapons[0].projectile.maxPierce = 9999;
             squeeze.weapons[0].projectile.CapPierce(999999);
             squeeze.name = "grab";
-            squeeze.weapons[0].projectile.scale *= 10;
+            squeeze.weapons[0].projectile.radius *= 10;
             var compact = squeeze.weapons[0].projectile.GetBehavior<DelayBloonChildrenSpawningModel>();
             compact.lifespan = 1.5f;
             squeeze.weapons[0].rate = towerModel.GetAttackModel().weapons[0].rate;
@@ -667,7 +682,6 @@ namespace MonkeyMachine
             electro.GetBehavior<CarryProjectileModel>().projectile.ApplyDisplay<punch>();
             electro.GetBehavior<CarryProjectileModel>().projectile.GetDamageModel().damage = 1;
             electro.GetBehavior<CarryProjectileModel>().projectile.GetDamageModel().immuneBloonProperties = BloonProperties.Purple | BloonProperties.Lead;
-            electro.overlayType = ElectricShockDisplay.CustomOverlayType;
 
             if (towerModel.appliedUpgrades.Contains("MonkeyMachine-u200"))
             {
@@ -713,17 +727,18 @@ namespace MonkeyMachine
             squeeze.GetBehavior<TargetStrongModel>().isSelectable = true;
             squeeze.AddBehavior<TargetFirstModel>(new TargetFirstModel("TargetFirstModel_", true, false));
             squeeze.range = towerModel.GetAttackModel().range;
-            squeeze.weapons[0].projectile.pierce = 6;
+            squeeze.weapons[0].projectile.pierce = 4;
             squeeze.weapons[0].projectile.maxPierce = 9999;
             squeeze.weapons[0].projectile.CapPierce(999999);
             squeeze.name = "grabbigtarget";
-            squeeze.weapons[0].projectile.scale *= 10;
+            squeeze.weapons[0].projectile.radius *= 10;
             var compact = squeeze.weapons[0].projectile.GetBehavior<DelayBloonChildrenSpawningModel>();
             compact.lifespan = 2f;
             squeeze.weapons[0].rate = towerModel.GetAttackModel().weapons[0].rate;
-            squeeze.weapons[0].rate += 2f;
+            squeeze.weapons[0].rate += 3f;
             squeeze.weapons[0].projectile.RemoveBehavior<CreateSoundOnDelayedCollisionModel>();
             grab.weapons[0].projectile.pierce = 45;
+            grab.weapons[0].projectile.GetDamageModel().damage = 7;
             towerModel.AddBehavior(squeeze);
 
             var shard = Game.instance.model.GetTowerFromId("DartMonkey-102").GetAttackModel().weapons[0].projectile.Duplicate();
@@ -741,71 +756,8 @@ namespace MonkeyMachine
         }
     }
 
-
-
-
-
-
-     /// <summary>
-    ///  public class ElectricShockDisplay : ModDisplay
-    ///   {
-    // Credit Bergbauer22: DirkTheDino
-    ///      private const string BaseOverlayType = "LaserShock";
-    ///      public static readonly string CustomOverlayType = "ElectricShock";
-    ///       private static SerializableDictionary<string, BloonOverlayScriptable> OverlayTypes => GameData.Instance.bloonOverlays.overlayTypes;
-    ///       public override string Name => base.Name + "-" + overlayClass;
-    ///       public override PrefabReference BaseDisplayReference => OverlayTypes[BaseOverlayType].assets[overlayClass];
-    ///       protected readonly BloonOverlayClass overlayClass;
-
-    ///      public ElectricShockDisplay() { }
-
-    ///      public ElectricShockDisplay(BloonOverlayClass overlayClass)
-    ///      {
-    ///          this.overlayClass = overlayClass;
-    ///       }
-
-    ///      public override IEnumerable<ModContent> Load() => System.Enum.GetValues(typeof(BloonOverlayClass))
-    ///         .Cast<BloonOverlayClass>()
-    ///         .Select(bc => new ElectricShockDisplay(bc));
-
-    ///    public override void Register()
-    ///    {
-    ///         base.Register();
-    ///         BloonOverlayScriptable electricShock;
-    ///         if (!OverlayTypes.ContainsKey(CustomOverlayType))
-    ///         {
-    ///             electricShock = OverlayTypes[CustomOverlayType] = ScriptableObject.CreateInstance<BloonOverlayScriptable>();
-    ///            electricShock.assets = new SerializableDictionary<BloonOverlayClass, PrefabReference>();
-    ///            electricShock.displayLayer = OverlayTypes[BaseOverlayType].displayLayer;
-    ///        }
-    ///        else
-    ///        {
-    ///            electricShock = OverlayTypes[CustomOverlayType];
-    ///        }
-    ///        electricShock.assets[overlayClass] = CreatePrefabReference(Id);
-    ///     }
-
-    ///        public override void ModifyDisplayNode(UnityDisplayNode node)
-    ///    {
-    ///      if (node.GetComponentInChildren<CustomSpriteFrameAnimator>())
-    ///       {
-    ///          Il2CppSystem.Collections.Generic.List<Sprite> frames = new Il2CppSystem.Collections.Generic.List<Sprite>();
-    ///         frames.Add(GetSprite("Electro1"));
-    ///          frames.Add(GetSprite("Electro2"));
-    ///         frames.Add(GetSprite("Electro3"));
-    ///         frames.Add(GetSprite("Electro4"));
-    ///         node.GetComponentInChildren<CustomSpriteFrameAnimator>().frames = frames;
-    ///    }
-    ///    if (node.GetComponentInChildren<MeshRenderer>())
-    /// {
-    /// node.GetComponentInChildren<MeshRenderer>().SetMainTexture(GetTexture(CustomOverlayType));
-    /// }
-    /// }
-    /// }
-
-    /// </summary>
 }
-    public class rocketgizmo1 : ModTower
+public class rocketgizmo1 : ModTower
     {
         public override string Portrait => "400gizmo3";
         public override string Name => "gizmo1rocket";
@@ -1108,6 +1060,8 @@ namespace MonkeyMachine
 
 }
 
+
+
 public class bloonsday : ModTower
 {
         public override TowerSet TowerSet => TowerSet.Support;
@@ -1125,8 +1079,7 @@ public class bloonsday : ModTower
     {
         towerModel.isSubTower = true;
         towerModel.radius = Game.instance.model.GetTower(TowerType.Piranha).radius;
-        towerModel.AddBehavior(Game.instance.model.GetTowerFromId("Marine").GetBehavior<TowerExpireModel>().Duplicate());
-        towerModel.GetBehavior<TowerExpireModel>().lifespan = 10;
+        towerModel.AddBehavior(new TowerExpireModel("ExpireModel", 15f, 9, false, false));
         towerModel.display = new PrefabReference() { guidRef = "" };
         towerModel.AddBehavior(new CreditPopsToParentTowerModel("DamageForMainTower"));
         var tower = towerModel.GetBehavior<AirUnitModel>();
@@ -1176,8 +1129,7 @@ public class megabloonsday : ModTower
     {
         towerModel.isSubTower = true;
         towerModel.radius = Game.instance.model.GetTower(TowerType.Piranha).radius;
-        towerModel.AddBehavior(Game.instance.model.GetTowerFromId("Marine").GetBehavior<TowerExpireModel>().Duplicate());
-        towerModel.GetBehavior<TowerExpireModel>().lifespan = 23;
+        towerModel.AddBehavior(new TowerExpireModel("ExpireModel", 25f, 9, false, false));
         towerModel.AddBehavior(new CreditPopsToParentTowerModel("DamageForMainTower"));
         towerModel.display = new PrefabReference() { guidRef = "" };
         var tower = towerModel.GetBehavior<AirUnitModel>();
