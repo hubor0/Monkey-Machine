@@ -6,17 +6,12 @@
 Monkey Machine Tower
 </h1>
 
-### Adds a new Monkey Machine Tower, a new Support Tower that uses both Melee and Ranged attacks to pop Bloons!
+### Adds a new Boxer Monkey Tower, a new Primary Tower that uses quick melee attacks to pop Bloons!
 
 This tower Contains:
 * 15 Complete Upgrades
 * Custom Icons, portraits and 3D Models
 
-Planned
-* a Paragon Upgrade
-* Ultimate Crosspath Mod compatibility
-
-## Huge Thanks to the homie Mattcy1 for help with the UI!
-(Tower Concept inspired by the Goblin Machine from Clash Royale)
+Paragon Upgrade and 555 version (Ultimate crosspathing) available right now! on Tewtiys membership server! 
 
 [![Requires BTD6 Mod Helper](https://raw.githubusercontent.com/gurrenm3/BTD-Mod-Helper/master/banner.png)](https://github.com/gurrenm3/BTD-Mod-Helper#readme)
