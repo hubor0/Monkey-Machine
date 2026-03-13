@@ -6,7 +6,7 @@
 Monkey Machine Tower
 </h1>
 
-### Adds a new Boxer Monkey Tower, a new Primary Tower that uses quick melee attacks to pop Bloons!
+### Adds a new Monkey Machine Tower, a new Support Tower that uses both Melee and Ranged attacks to pop Bloons!
 
 This tower Contains:
 * 15 Complete Upgrades
