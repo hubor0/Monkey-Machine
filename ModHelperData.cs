@@ -3,7 +3,7 @@ namespace MonkeyMachine;
 public static class ModHelperData
 {
     public const string WorksOnVersion = "45.0";
-    public const string Version = "1.0.1";
+    public const string Version = "2.0.0";
     public const string Name = "Monkey Machine Tower";
 
     public const string Description = "Adds a new custom Monkey Machine tower. Complete with all 15 tiers and a Paragon coming soon!";
